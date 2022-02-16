@@ -1366,7 +1366,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 return
             }
             let perceptronWeightNumber = Math.floor(Math.random() * this.structure[perceptronLayer][perceptronNumber].weights.length)
-            this.structure[perceptronLayer][perceptronNumber].weights[perceptronWeightNumber] += this.structure[perceptronLayer][perceptronNumber].weight()/2
+            this.structure[perceptronLayer][perceptronNumber].weights[perceptronWeightNumber] += this.structure[perceptronLayer][perceptronNumber].weight()/20
         }
         mutateTowards(goals) {
             this.compute(this.inputs)
@@ -1437,7 +1437,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.gen = 1
         }
         gatherInfo() {
-            this.inputs = [0,0,0,0,0,0,0] //7
+            this.inputs = [0,0,0,0,0,0,0,0,0,0,0] //7
             let min = 999999999999
             for (let t = 0; t < cells.length; t++) {
 
@@ -1485,8 +1485,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     }
                 }
             }
-            this.inputs[5] =  0 //(this.body.x - 400) / 400
-            this.inputs[6] = 0// (this.body.y - 400) / 400
+            this.inputs[5] =  (this.body.x - 400) / 400
+            this.inputs[6] = (this.body.y - 400) / 400
         }
         faceLie() {
             let line2
@@ -1681,7 +1681,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         draw() {
             if(Math.random() < .01){
                 this.parents = []
-                this.children = []
+                // this.children = []
             }
             if(this.age > 2500){
                 this.marked = 1
@@ -1695,22 +1695,22 @@ window.addEventListener('DOMContentLoaded', (event) => {
             if (this.body.x < 0) {
                 this.body.x = canvas.width
                 // this.marked = 1
-                this.age+=300+(Math.floor(Math.random()*10))
+                this.age+=2700+(Math.floor(Math.random()*100))
             }
             if (this.body.y < 0) {
                 this.body.y = canvas.width
                 // this.marked = 1
-                this.age+=300+(Math.floor(Math.random()*10))
+                this.age+=2700+(Math.floor(Math.random()*100))
             }
             if (this.body.x > canvas.width) {
                 this.body.x =  0 //canvas.width
                 // this.marked = 1
-                this.age+=300+(Math.floor(Math.random()*10))
+                this.age+=2700+(Math.floor(Math.random()*100))
             }
             if (this.body.y > canvas.width) {
                 this.body.y =  0 //canvas.width
                 // this.marked = 1
-                this.age+=300+(Math.floor(Math.random()*10))
+                this.age+=2700+(Math.floor(Math.random()*100))
             }
             this.body.draw()
         }
@@ -1748,7 +1748,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 if (foods[t].doesPerimeterTouch(this.body)) {
                     this.repmark = 1
                     foods[t].marked = 1
-                    this.age-=300
+                    this.age-=220
                     }
             }
 
@@ -1765,7 +1765,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
             let offspring = new Cell(this.body.x, this.body.y, this.r + ((Math.random() - .5) * 36), this.g + ((Math.random() - .5) * 36), this.b + ((Math.random() - .5) * 36))
             offspring.gen = this.gen + 1
             offspring.net = this.net.clone(this.net)
-            offspring.net.mutate()
+            for(let t = 0;t<200;t++){
+                offspring.net.mutate()
+            }
             offspring.parents = [...this.children]
             for(let t = 0;t<this.children.length;t++){
                 this.children[t].children.push(offspring)
@@ -1801,17 +1803,19 @@ window.addEventListener('DOMContentLoaded', (event) => {
     let tmax = 0
 
     let cells = []
-    for (let t = 0; t < 25; t++) {
+    for (let t = 0; t < 1; t++) {
         cells.push(new Cell(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 255, Math.random() * 255, Math.random() * 255))
+        cells[t].net = cells[t].net.clone(nightnet)
+        cells[t].net.mutate()
     }
     let foods = []
-    for (let t = 0; t < 3; t++) {
-        foods.push(new Circle(Math.random() * canvas.width, Math.random() * canvas.height, 2, "cyan"))
+    for (let t = 0; t < 1; t++) {
+        foods.push(new Circle(Math.random() * canvas.width, Math.random() * canvas.height, 1.5, "cyan"))
     }
 
     function main() {
 
-        while(cells.length < 25){
+        while(cells.length < 2){
             cells.push(new Cell(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 255, Math.random() * 255, Math.random() * 255))
         }
         canvas_context.clearRect(0, 0, canvas.width, canvas.height)  // refreshes the image
@@ -1864,3 +1868,29 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 })
+
+
+
+// class Bubble{
+//     constructor(x,y,z,scale){
+//         this.x = x
+//         this.y = y
+//         this.z = z
+//         this.scale = scale
+//     }
+// }
+
+// let bubble = new Bubble(100,100,100, 1)
+// console.log(bubble.x)
+// class DummyScript{
+//     constructor(){
+
+//     }
+//     draw(){
+//         bubble.x = 120
+//     }
+// }
+
+// let dummy = new DummyScript()
+// dummy.draw()
+// console.log(bubble.x)
